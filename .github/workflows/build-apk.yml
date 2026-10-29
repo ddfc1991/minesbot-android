@@ -1,36 +1,46 @@
-name: Build APK
+name: BuildAPK
 
 on:
   push:
-    branches: [ main, master ]
-  workflow_dispatch:
+    branches: [main, master]
+  workflow_dispatch: {}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: AndroidSDK
+        run: |
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platforms;android-35" "build-tools;35.0.0" > /dev/null 2>&1 || true
 
-      - name: Setup Gradle
+      - name: GradleCache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.kts', '**/*.gradle') }}
+
+      - name: SetupGradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build debug APK
-        run: |
-          gradle :app:assembleDebug --no-daemon --stacktrace --info
+      - name: Build
+        run: gradle :app:assembleDebug --no-daemon --stacktrace
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - name: Upload
         if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: minesbot-debug-apk
+          name: minesbot-apk
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: warn
