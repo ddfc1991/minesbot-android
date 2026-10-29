@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  无障碍配置。
+  为什么 canRetrieveWindowContent 是核心：
+    这是能拿到节点树、能用 ACTION_SET_TEXT 的前提。
+  flagReportViewIds：让节点带 viewIdResourceName，
+    VPS 侧才能靠它做稳定的跨快照指纹匹配。
+-->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeWindowStateChanged|typeWindowContentChanged|typeViewFocused"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagDefault|flagIncludeNotImportantViews|flagReportViewIds|flagRetrieveInteractiveWindows"
+    android:canRetrieveWindowContent="true"
+    android:canPerformGestures="true"
+    android:canTakeScreenshot="true"
+    android:description="@string/accessibility_desc"
+    android:notificationTimeout="100"
+    android:summary="@string/accessibility_summary" />
