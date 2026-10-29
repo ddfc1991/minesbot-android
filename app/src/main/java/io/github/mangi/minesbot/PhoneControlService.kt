@@ -103,7 +103,7 @@ class PhoneControlService : AccessibilityService() {
         if (android.os.Build.VERSION.SDK_INT >= 34) {
             val done = CountDownLatch(1)
             val out = AtomicReference<Bitmap?>(null)
-            takeScreenshot(executor, object : TakeScreenshotCallback {
+            takeScreenshot(android.view.Display.DEFAULT_DISPLAY, executor, object : TakeScreenshotCallback {
                 override fun onSuccess(r: ScreenshotResult) {
                     out.set(r.toBitmap())
                     done.countDown()
